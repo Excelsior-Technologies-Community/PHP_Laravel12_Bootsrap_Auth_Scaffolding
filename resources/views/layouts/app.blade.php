@@ -5,15 +5,24 @@
 
     <meta charset="utf-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
 
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta
+        name="csrf-token"
+        content="{{ csrf_token() }}"
+    >
 
     <title>
         {{ config('app.name', 'Laravel') }}
     </title>
 
-    <link rel="dns-prefetch" href="//fonts.bunny.net">
+    <link
+        rel="dns-prefetch"
+        href="//fonts.bunny.net"
+    >
 
     <link
         href="https://fonts.bunny.net/css?family=Nunito"
@@ -26,6 +35,7 @@
     ])
 
 </head>
+
 
 <body>
 
@@ -42,26 +52,27 @@
                 {{ config('app.name', 'Laravel') }}
             </a>
 
+
             <button
                 class="navbar-toggler"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
             >
 
                 <span class="navbar-toggler-icon"></span>
 
             </button>
 
+
             <div
                 class="collapse navbar-collapse"
                 id="navbarSupportedContent"
             >
 
-                <!-- Left Side -->
+                {{-- ================================================= --}}
+                {{-- LEFT NAVIGATION --}}
+                {{-- ================================================= --}}
 
                 <ul class="navbar-nav me-auto">
 
@@ -78,6 +89,7 @@
 
                         </li>
 
+
                         <li class="nav-item">
 
                             <a
@@ -89,6 +101,7 @@
 
                         </li>
 
+
                         <li class="nav-item">
 
                             <a
@@ -99,6 +112,7 @@
                             </a>
 
                         </li>
+
 
                         <li class="nav-item">
 
@@ -115,7 +129,79 @@
 
                 </ul>
 
-                <!-- Right Side -->
+
+                {{-- ================================================= --}}
+                {{-- GLOBAL SEARCH --}}
+                {{-- ================================================= --}}
+
+                @auth
+
+                    <div class="position-relative me-3">
+
+                        <input
+                            type="text"
+                            id="globalSearch"
+                            class="form-control"
+                            placeholder="🔎 Search..."
+                            style="width: 220px;"
+                            autocomplete="off"
+                        >
+
+
+                        <div
+                            id="searchResults"
+                            class="position-absolute bg-white border rounded shadow-sm w-100"
+                            style="
+                                display:none;
+                                z-index:1050;
+                            "
+                        >
+
+                            <a
+                                href="{{ route('home') }}"
+                                class="dropdown-item"
+                                data-search="dashboard home"
+                            >
+                                📊 Dashboard
+                            </a>
+
+
+                            <a
+                                href="{{ route('profile.edit') }}"
+                                class="dropdown-item"
+                                data-search="profile account user"
+                            >
+                                👤 Profile
+                            </a>
+
+
+                            <a
+                                href="{{ route('password.edit') }}"
+                                class="dropdown-item"
+                                data-search="password security"
+                            >
+                                🔐 Change Password
+                            </a>
+
+
+                            <a
+                                href="{{ route('login.activities') }}"
+                                class="dropdown-item"
+                                data-search="login activity history security"
+                            >
+                                🕐 Login Activity
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                @endauth
+
+
+                {{-- ================================================= --}}
+                {{-- RIGHT NAVIGATION --}}
+                {{-- ================================================= --}}
 
                 <ul class="navbar-nav ms-auto">
 
@@ -131,6 +217,7 @@
                             </a>
 
                         </li>
+
 
                         <li class="nav-item">
 
@@ -152,10 +239,10 @@
                                 href="#"
                                 role="button"
                                 data-bs-toggle="dropdown"
-                                aria-expanded="false"
                             >
                                 {{ Auth::user()->name }}
                             </a>
+
 
                             <ul class="dropdown-menu dropdown-menu-end">
 
@@ -165,10 +252,11 @@
                                         class="dropdown-item"
                                         href="{{ route('profile.edit') }}"
                                     >
-                                        My Profile
+                                        👤 My Profile
                                     </a>
 
                                 </li>
+
 
                                 <li>
 
@@ -176,10 +264,11 @@
                                         class="dropdown-item"
                                         href="{{ route('password.edit') }}"
                                     >
-                                        Change Password
+                                        🔐 Change Password
                                     </a>
 
                                 </li>
+
 
                                 <li>
 
@@ -187,14 +276,16 @@
                                         class="dropdown-item"
                                         href="{{ route('login.activities') }}"
                                     >
-                                        Login Activity
+                                        🕐 Login Activity
                                     </a>
 
                                 </li>
 
+
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
+
 
                                 <li>
 
@@ -209,7 +300,7 @@
                                             type="submit"
                                             class="dropdown-item"
                                         >
-                                            Logout
+                                            🚪 Logout
                                         </button>
 
                                     </form>
@@ -230,6 +321,7 @@
 
     </nav>
 
+
     <main class="py-4">
 
         @yield('content')
@@ -237,6 +329,91 @@
     </main>
 
 </div>
+
+
+{{-- ============================================================= --}}
+{{-- GLOBAL SEARCH JAVASCRIPT --}}
+{{-- ============================================================= --}}
+
+@auth
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const searchInput = document.getElementById('globalSearch');
+
+    const searchResults = document.getElementById('searchResults');
+
+    if (!searchInput || !searchResults) {
+        return;
+    }
+
+    const items = searchResults.querySelectorAll('[data-search]');
+
+    searchInput.addEventListener('input', function () {
+
+        const keyword = this.value
+            .toLowerCase()
+            .trim();
+
+        if (!keyword) {
+
+            searchResults.style.display = 'none';
+
+            items.forEach(function (item) {
+                item.style.display = '';
+            });
+
+            return;
+        }
+
+        let found = false;
+
+        items.forEach(function (item) {
+
+            const text = item
+                .dataset.search
+                .toLowerCase();
+
+            if (text.includes(keyword)) {
+
+                item.style.display = 'block';
+
+                found = true;
+
+            } else {
+
+                item.style.display = 'none';
+
+            }
+
+        });
+
+        searchResults.style.display =
+            found ? 'block' : 'none';
+
+    });
+
+
+    document.addEventListener('click', function (event) {
+
+        if (
+            !searchInput.contains(event.target) &&
+            !searchResults.contains(event.target)
+        ) {
+
+            searchResults.style.display = 'none';
+
+        }
+
+    });
+
+});
+
+</script>
+
+@endauth
 
 </body>
 
