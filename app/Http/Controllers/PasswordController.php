@@ -10,7 +10,7 @@ use Illuminate\View\View;
 class PasswordController extends Controller
 {
     /**
-     * Show the change password page.
+     * Show change password page.
      */
     public function edit(): View
     {
@@ -18,7 +18,7 @@ class PasswordController extends Controller
     }
 
     /**
-     * Update the user's password.
+     * Update password.
      */
     public function update(Request $request): RedirectResponse
     {
@@ -42,6 +42,9 @@ class PasswordController extends Controller
 
         return redirect()
             ->route('password.edit')
-            ->with('success', 'Password changed successfully.');
+            ->with(
+                'success',
+                'Password changed successfully. Your account is now secured with the new password.'
+            );
     }
 }
