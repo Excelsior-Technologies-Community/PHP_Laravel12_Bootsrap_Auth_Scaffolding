@@ -27,7 +27,7 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | Profile Management
+    | Profile
     |--------------------------------------------------------------------------
     */
 
@@ -38,17 +38,17 @@ Route::middleware('auth')->group(function () {
         ->name('profile.update');
 
 
-/*
-|--------------------------------------------------------------------------
-| Change Password
-|--------------------------------------------------------------------------
-*/
+    /*
+    |--------------------------------------------------------------------------
+    | Password
+    |--------------------------------------------------------------------------
+    */
 
-Route::get('/password', [PasswordController::class, 'edit'])
-    ->name('password.edit');
+    Route::get('/password', [PasswordController::class, 'edit'])
+        ->name('password.edit');
 
-Route::post('/password', [PasswordController::class, 'update'])
-    ->name('password.change');
+    Route::post('/password', [PasswordController::class, 'update'])
+        ->name('password.change');
 
 
     /*
@@ -57,7 +57,19 @@ Route::post('/password', [PasswordController::class, 'update'])
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/login-activities', [LoginActivityController::class, 'index'])
-        ->name('login.activities');
+    Route::get('/login-activities', [
+        LoginActivityController::class,
+        'index'
+    ])->name('login.activities');
+
+    Route::get('/login-activities/export', [
+        LoginActivityController::class,
+        'export'
+    ])->name('login.activities.export');
+
+    Route::delete('/login-activities/clear', [
+        LoginActivityController::class,
+        'clear'
+    ])->name('login.activities.clear');
 
 });
