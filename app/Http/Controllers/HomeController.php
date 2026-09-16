@@ -67,11 +67,15 @@ class HomeController extends Controller
         $completion = 0;
 
         if (!empty($user->name)) {
-            $completion += 50;
+            $completion += 35;
         }
 
         if (!empty($user->email)) {
-            $completion += 50;
+            $completion += 35;
+        }
+
+        if (!empty($user->avatar)) {
+            $completion += 30;
         }
 
         /*
@@ -82,7 +86,7 @@ class HomeController extends Controller
 
         $recentActivities = $user
             ->loginActivities()
-            ->oldest('login_at')
+            ->latest('login_at')
             ->take(5)
             ->get();
 
